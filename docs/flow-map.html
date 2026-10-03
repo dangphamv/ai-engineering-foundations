@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Foundations Flow Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: schematic sheet — run-order strip on top, then per-file flow diagram with a sticky inspector panel */
+:root {
+  --paper: #f6f7f9;
+  --sheet: #ffffff;
+  --ink: #18202e;
+  --muted: #5a6577;
+  --rule: #d9dee7;
+  --grid: #e9ecf2;
+  --async: #2457d6;
+  --async-soft: #e6edfc;
+  --torch: #c2560f;
+  --torch-soft: #fcede2;
+  --ok: #1f7a4d;
+  --code-bg: #f0f2f6;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10141c; --sheet: #171c26; --ink: #e5e9f0; --muted: #98a2b3; --rule: #2a3242; --grid: #1a2030;
+    --async: #7fa2ff; --async-soft: #1c2745; --torch: #f0965a; --torch-soft: #3a2518; --ok: #5fcf96; --code-bg: #0f131b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10141c; --sheet: #171c26; --ink: #e5e9f0; --muted: #98a2b3; --rule: #2a3242; --grid: #1a2030;
+  --async: #7fa2ff; --async-soft: #1c2745; --torch: #f0965a; --torch-soft: #3a2518; --ok: #5fcf96; --code-bg: #0f131b;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font: 15px/1.6 var(--font-body);
+  padding-inline: 16px;
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1120px; margin-inline: auto; display: grid; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 21px; font-weight: 700; }
+p { margin: 0; }
+code, pre, .mono { font-family: var(--font-mono); }
+.eyebrow { font: 600 11px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); max-width: 64ch; }
+header { display: grid; gap: 10px; }
+
+/* Run order */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.step { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.step-n { font: 600 12px var(--font-mono); color: var(--muted); }
+.step h3 { font-size: 15px; }
+.step p { font-size: 13px; color: var(--muted); }
+.cmd { display: flex; align-items: center; gap: 6px; background: var(--code-bg); border-radius: 4px; padding: 6px 6px 6px 10px; min-width: 0; }
+.cmd code { font-size: 12px; overflow-x: auto; white-space: nowrap; flex: 1; min-width: 0; }
+.copy { font: 600 11px var(--font-body); border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); border-radius: 4px; padding: 3px 8px; cursor: pointer; flex: none; }
+.copy:hover { border-color: var(--muted); }
+.tag { display: inline-block; font: 600 11px var(--font-mono); padding: 2px 6px; border-radius: 3px; }
+.tag.free { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+.tag.paid { background: var(--async-soft); color: var(--async); }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.tab { font: 600 14px var(--font-mono); background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 10px 14px; cursor: pointer; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-color: var(--accent, var(--ink)); }
+.tab[data-flow="async"] { --accent: var(--async); }
+.tab[data-flow="torch"] { --accent: var(--torch); }
+:focus-visible { outline: 2px solid var(--async); outline-offset: 2px; }
+
+.flow-head { display: grid; gap: 6px; padding-block: 20px 4px; }
+.board { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; padding-top: 16px; }
+@media (max-width: 860px) { .board { grid-template-columns: minmax(0, 1fr); } }
+
+/* Diagram */
+.diagram { display: grid; justify-items: center; gap: 0; min-width: 0; }
+.node {
+  width: min(100%, 420px); text-align: left; cursor: pointer;
+  background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 6px;
+  padding: 10px 14px; display: grid; grid-template-columns: 30px 1fr; gap: 2px 10px; align-items: baseline;
+  font: inherit; transition: border-color .15s, box-shadow .15s;
+}
+.node:hover { border-color: var(--accent); }
+.node[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.node .n { font: 600 12px var(--font-mono); color: var(--accent); grid-row: span 2; }
+.node .t { font-weight: 700; font-size: 14px; }
+.node .s { font: 12px var(--font-mono); color: var(--muted); overflow-wrap: anywhere; }
+.node.core { background: var(--accent-soft); }
+.flow-async { --accent: var(--async); --accent-soft: var(--async-soft); }
+.flow-torch { --accent: var(--torch); --accent-soft: var(--torch-soft); }
+.arrow { width: 2px; height: 22px; background: var(--rule); position: relative; }
+.arrow::after { content: ""; position: absolute; bottom: -1px; left: -4px; border: 5px solid transparent; border-top-color: var(--rule); border-bottom: 0; }
+
+.group { width: 100%; max-width: 520px; border: 1.5px dashed var(--accent); border-radius: 8px; padding: 30px 14px 16px; position: relative; display: grid; justify-items: center; }
+.group > .glabel { position: absolute; top: -11px; left: 12px; background: var(--paper); padding: 0 8px; font: 600 12px var(--font-mono); color: var(--accent); }
+.group > .gnote { position: absolute; top: 8px; right: 12px; font: 11px var(--font-mono); color: var(--muted); }
+.group.inner { max-width: 470px; border-style: solid; border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.lanes { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; }
+.lane { font: 600 11px var(--font-mono); padding: 3px 7px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
+.lane.wait { background: transparent; border: 1px dashed var(--rule); color: var(--muted); }
+
+/* Inspector */
+.inspector { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.inspector .head { display: grid; gap: 4px; }
+.inspector .num { font: 600 12px var(--font-mono); color: var(--accent); }
+.inspector h3 { font-size: 19px; }
+.field { display: grid; gap: 4px; }
+.field .k { font: 600 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.field .v { font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 12px var(--font-mono); background: var(--code-bg); border: 1px solid var(--rule); padding: 2px 7px; border-radius: 3px; }
+pre.code { margin: 0; background: var(--code-bg); border-radius: 6px; padding: 12px; font-size: 12px; line-height: 1.55; overflow-x: auto; }
+.risk { border-left: 3px solid var(--accent); padding: 6px 0 6px 12px; font-size: 13px; }
+.navbtns { display: flex; justify-content: space-between; gap: 8px; }
+.navbtns button { font: 600 12px var(--font-body); background: var(--sheet); border: 1px solid var(--rule); color: var(--ink); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.navbtns button:disabled { opacity: .4; cursor: default; }
+
+/* Concurrency sim */
+.sim { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; display: grid; gap: 14px; margin-top: 28px; }
+.sim-controls { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.sim-controls button { font: 600 12px var(--font-mono); border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+.sim-controls button[aria-pressed="true"] { background: var(--async); border-color: var(--async); color: var(--sheet); }
+.bars { display: grid; gap: 6px; overflow-x: auto; }
+.bar-row { display: grid; grid-template-columns: 64px minmax(240px, 1fr); gap: 10px; align-items: center; }
+.bar-row .lbl { font: 12px var(--font-mono); color: var(--muted); }
+.track { position: relative; height: 18px; background: var(--code-bg); border-radius: 3px; }
+.bar { position: absolute; top: 0; height: 100%; border-radius: 3px; background: var(--async); transform-origin: left; }
+.bar.waited { background: repeating-linear-gradient(90deg, var(--rule) 0 4px, transparent 4px 8px); }
+.axis { display: grid; grid-template-columns: 64px minmax(240px, 1fr); gap: 10px; font: 11px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.axis div:last-child { display: flex; justify-content: space-between; }
+.sim-result { font-size: 14px; font-variant-numeric: tabular-nums; }
+.sim-result strong { font-family: var(--font-mono); }
+@media (prefers-reduced-motion: no-preference) { .bar.anim { animation: grow .5s ease-out both; } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">ai-engineering-foundations · week 1</span>
+    <h1>Sơ đồ flow: chạy gì, theo thứ tự nào, dùng công cụ gì</h1>
+    <p class="lede">Bấm vào từng node trong sơ đồ để xem node đó làm gì, dùng thư viện nào, kỹ thuật gì và chuyện gì xảy ra nếu bỏ nó đi.</p>
+  </header>
+
+  <section aria-labelledby="order-h" style="display:grid;gap:14px">
+    <h2 id="order-h">Bạn làm gì trước</h2>
+    <p class="lede">Hai file độc lập, không phụ thuộc nhau. Nên chạy <code>train.py</code> trước vì không cần key và không tốn tiền.</p>
+    <div class="steps">
+      <div class="step"><span class="step-n">Bước 0 · 1 lần</span><h3>Cài thư viện</h3><div class="cmd"><code>uv sync</code><button class="copy" data-copy="uv sync">Copy</button></div><p>uv đọc <code>uv.lock</code> và tạo <code>.venv</code> giống hệt máy gốc.</p></div>
+      <div class="step"><span class="step-n">Bước 1</span><h3>Train mạng nhỏ <span class="tag free">miễn phí</span></h3><div class="cmd"><code>uv run week1/train.py</code><button class="copy" data-copy="uv run week1/train.py">Copy</button></div><p>Chạy trên CPU vài giây. Chạy được là môi trường đã ổn.</p></div>
+      <div class="step"><span class="step-n">Bước 2</span><h3>Điền API key</h3><div class="cmd"><code>cp .env.example .env</code><button class="copy" data-copy="cp .env.example .env">Copy</button></div><p>Mở <code>.env</code>, thay <code>sk-...</code> bằng key OpenAI thật.</p></div>
+      <div class="step"><span class="step-n">Bước 3</span><h3>Gọi LLM <span class="tag paid">tốn vài cent</span></h3><div class="cmd"><code>uv run week1/sentiment.py</code><button class="copy" data-copy="uv run week1/sentiment.py">Copy</button></div><p>Cần internet. Lỗi lúc này gần như chắc chắn do key hoặc credit.</p></div>
+      <div class="step"><span class="step-n">Bước 4</span><h3>Thí nghiệm</h3><p>Sửa một chỗ trong code, chạy lại, so kết quả. Mỗi node bên dưới có mục “Nếu bỏ đi” gợi ý chỗ để thử.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="flows-h">
+    <h2 id="flows-h" style="margin-bottom:12px">Flow bên trong từng file</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-async" data-flow="async" aria-selected="true" aria-controls="panel-async">sentiment.py</button>
+      <button class="tab" role="tab" id="tab-torch" data-flow="torch" aria-selected="false" aria-controls="panel-torch">train.py</button>
+    </div>
+
+    <div id="panel-async" role="tabpanel" aria-labelledby="tab-async" class="flow-async">
+      <div class="flow-head">
+        <p class="lede"><strong>Input:</strong> 6 câu review. <strong>Output:</strong> mỗi câu một nhãn <code>positive / negative / neutral</code> + confidence. Thời gian chờ mạng chiếm gần hết, nên dùng async để 6 request chạy đồng thời trên 1 thread.</p>
+      </div>
+      <div class="board">
+        <div class="diagram" id="diagram-async"></div>
+        <aside class="inspector" id="insp-async" aria-live="polite"></aside>
+      </div>
+      <div class="sim">
+        <div style="display:grid;gap:4px">
+          <span class="eyebrow">Mô phỏng MAX_CONCURRENCY</span>
+          <h3 style="font-size:17px">6 request, mỗi request mất 0.9–1.5 giây chờ mạng</h3>
+        </div>
+        <div class="sim-controls" role="group" aria-label="Số request chạy cùng lúc">
+          <button data-c="1">Semaphore(1) · tuần tự</button>
+          <button data-c="2">Semaphore(2)</button>
+          <button data-c="5" aria-pressed="true">Semaphore(5) · như code</button>
+          <button data-c="6">Không giới hạn</button>
+        </div>
+        <div class="bars" id="bars"></div>
+        <p class="sim-result" id="sim-result"></p>
+      </div>
+    </div>
+
+    <div id="panel-torch" role="tabpanel" aria-labelledby="tab-torch" class="flow-torch" hidden>
+      <div class="flow-head">
+        <p class="lede"><strong>Input:</strong> 2000 điểm 2D có nhãn 0/1 (hai hình trăng lồng nhau). <strong>Output:</strong> một model đoán đúng ~95.5% trên dữ liệu chưa thấy. 50 epoch × 25 batch = 1250 lần cập nhật trọng số.</p>
+      </div>
+      <div class="board">
+        <div class="diagram" id="diagram-torch"></div>
+        <aside class="inspector" id="insp-torch" aria-live="polite"></aside>
+      </div>
+    </div>
+  </section>
+
+  <footer>Repo: github.com/dangphamv/ai-engineering-foundations · Code trong sơ đồ trích từ <code>week1/sentiment.py</code> và <code>week1/train.py</code>.</footer>
+</div>
+
+<script>
+const FLOWS = {
+  async: {
+    nodes: [
+      { n: 1, t: "Khởi động", s: "uv run week1/sentiment.py",
+        what: "uv kích hoạt môi trường .venv của dự án rồi chạy file bằng Python 3.12.",
+        tools: ["uv", "uv.lock", "Python 3.12"],
+        tech: "Quản lý dependency bằng lock file: mọi máy cài đúng cùng phiên bản thư viện.",
+        code: "if __name__ == \"__main__\":\n    asyncio.run(main())",
+        risk: "Chạy bằng python3 hệ thống thay vì uv run sẽ báo ModuleNotFoundError vì thư viện chỉ nằm trong .venv." },
+      { n: 2, t: "Nạp cấu hình", s: "load_dotenv()",
+        what: "Đọc file .env và đưa OPENAI_API_KEY, OPENAI_MODEL vào biến môi trường của tiến trình.",
+        tools: ["python-dotenv", "os.getenv", ".env"],
+        tech: "Tách secret khỏi code (12-factor). .env nằm trong .gitignore, chỉ .env.example được commit.",
+        code: "load_dotenv()\n\nMODEL = os.getenv(\"OPENAI_MODEL\", \"gpt-4o-mini\")",
+        risk: "Gọi load_dotenv() sau khi tạo client thì client không thấy key và báo lỗi xác thực." },
+      { n: 3, t: "Tạo client + semaphore", s: "AsyncOpenAI() · Semaphore(5)",
+        what: "Tạo một client HTTP dùng chung cho mọi request và một semaphore cho phép tối đa 5 request cùng lúc.",
+        tools: ["openai.AsyncOpenAI", "asyncio.Semaphore"],
+        tech: "Tái sử dụng connection pool (không bắt tay TLS lại mỗi request). Semaphore là cơ chế backpressure.",
+        code: "client = AsyncOpenAI()\nsemaphore = asyncio.Semaphore(MAX_CONCURRENCY)",
+        risk: "Tạo client mới trong mỗi lần classify() làm chậm và có thể rò rỉ kết nối." },
+      { n: 4, t: "Fan-out", s: "asyncio.gather(*tasks)",
+        what: "Tạo 6 coroutine classify(review) và giao hết cho event loop.",
+        tools: ["asyncio.gather", "event loop"],
+        tech: "Concurrency trên 1 thread: khi một task await chờ mạng, event loop chuyển sang task khác.",
+        code: "results = await asyncio.gather(\n    *(classify(r) for r in REVIEWS), return_exceptions=True\n)",
+        risk: "Dùng vòng for với await từng cái thì 6 request chạy tuần tự, mất gấp ~5 lần thời gian." },
+      { n: 5, t: "Chờ slot", s: "async with semaphore", group: "task",
+        what: "Task xin một slot. 5 task đầu vào ngay, task thứ 6 đứng chờ đến khi có task trả slot.",
+        tools: ["asyncio.Semaphore"],
+        tech: "Giới hạn đồng thời để không vượt rate limit của API.",
+        code: "async with semaphore:\n    resp = await client.chat.completions.create(...)",
+        risk: "Với 10.000 review mà không có semaphore, API sẽ trả lỗi 429 Too Many Requests hàng loạt." },
+      { n: 6, t: "Gọi API", s: "chat.completions.create", group: "task", core: true,
+        what: "Gửi review kèm JSON schema lên OpenAI, rồi await chờ phản hồi. Đây là chỗ tốn thời gian nhất.",
+        tools: ["openai SDK", "HTTPS", "JSON Schema"],
+        tech: "Structured outputs với strict: True. Model bị ràng buộc khi sinh token nên chỉ ra được JSON đúng schema.",
+        code: "response_format={\n    \"type\": \"json_schema\",\n    \"json_schema\": {\"name\": \"sentiment\",\n                    \"strict\": True,\n                    \"schema\": SENTIMENT_SCHEMA},\n}",
+        risk: "Bỏ response_format thì model có thể trả “Here is the JSON: {...}” và bước validate sẽ lỗi." },
+      { n: 7, t: "Kiểm tra refusal", s: "message.refusal", group: "task",
+        what: "Kiểm tra model có từ chối trả lời không trước khi đọc nội dung.",
+        tools: ["choice.message.refusal"],
+        tech: "Kiểm tra trạng thái trước khi đọc dữ liệu.",
+        code: "choice = resp.choices[0]\nif choice.message.refusal:\n    raise RuntimeError(f\"refused: {choice.message.refusal}\")",
+        risk: "Bỏ đi thì content có thể là None và lỗi sẽ khó hiểu hơn ở bước sau." },
+      { n: 8, t: "Validate bằng pydantic", s: "Sentiment.model_validate_json", group: "task", core: true,
+        what: "Biến chuỗi JSON thành object Sentiment có kiểu rõ ràng. Sai kiểu hoặc sai giá trị thì ném ValidationError.",
+        tools: ["pydantic.BaseModel", "Literal", "Field(ge=0, le=1)"],
+        tech: "Parse, don't validate. Lớp phòng thủ thứ hai: chặn cả những ràng buộc JSON Schema không diễn tả được, như confidence trong 0–1.",
+        code: "class Sentiment(BaseModel):\n    label: Literal[\"positive\", \"negative\", \"neutral\"]\n    confidence: float = Field(ge=0, le=1)\n\nreturn Sentiment.model_validate_json(choice.message.content)",
+        risk: "Không validate thì một confidence = 7.5 có thể lọt vào database và làm sai thống kê." },
+      { n: 9, t: "Fan-in", s: "return_exceptions=True",
+        what: "Đợi cả 6 task xong. Task lỗi trả về object Exception thay vì làm sập cả batch.",
+        tools: ["asyncio.gather"],
+        tech: "Xử lý lỗi một phần (partial failure). Kết quả giữ đúng thứ tự input.",
+        code: "results = await asyncio.gather(..., return_exceptions=True)",
+        risk: "Bỏ return_exceptions thì chỉ 1 review lỗi là mất kết quả của cả 6." },
+      { n: 10, t: "In kết quả", s: "OK · INVALID · ERROR",
+        what: "Phân loại từng kết quả: hợp lệ, lỗi validate, hay lỗi API/mạng. In thêm tổng thời gian.",
+        tools: ["isinstance", "time.perf_counter"],
+        tech: "Tách lỗi dữ liệu (ValidationError) khỏi lỗi hạ tầng để biết sửa ở đâu.",
+        code: "if isinstance(result, ValidationError): ...\nelif isinstance(result, Exception): ...\nelse:\n    print(f\"[{result.label:>8} {result.confidence:.2f}] {review}\")",
+        risk: "Gộp mọi lỗi làm một thì không phân biệt được do prompt hay do mạng." },
+    ],
+  },
+  torch: {
+    nodes: [
+      { n: 1, t: "Cố định seed", s: "torch.manual_seed(0)",
+        what: "Cố định bộ sinh số ngẫu nhiên: dữ liệu, trọng số ban đầu và thứ tự xáo trộn giống nhau mỗi lần chạy.",
+        tools: ["torch.manual_seed"],
+        tech: "Reproducibility: muốn so sánh hai thí nghiệm thì mọi thứ khác phải giữ nguyên.",
+        code: "torch.manual_seed(0)",
+        risk: "Bỏ đi thì mỗi lần chạy accuracy lệch một chút, khó biết thay đổi của bạn có tác dụng thật không." },
+      { n: 2, t: "Sinh dữ liệu", s: "make_moons(2000, noise=0.25)",
+        what: "Tạo 2000 điểm 2D thành hai hình trăng lồng nhau, cộng nhiễu Gauss, kèm nhãn 0 và 1.",
+        tools: ["torch.rand", "torch.cos / sin", "torch.randn"],
+        tech: "Dữ liệu tổng hợp không tách được bằng đường thẳng, nên bắt buộc mạng phải học phi tuyến.",
+        code: "X, y = make_moons(2000, noise=0.25)",
+        risk: "noise=0.1 thì đạt 100% ngay epoch 5, con số không còn ý nghĩa để học." },
+      { n: 3, t: "Xáo trộn + chia train/val", s: "1600 train · 400 val",
+        what: "Xáo trộn rồi giữ 400 điểm riêng, model không bao giờ học trên chúng.",
+        tools: ["torch.randperm", "slicing"],
+        tech: "Hold-out validation: đo khả năng tổng quát hoá thay vì khả năng học thuộc.",
+        code: "perm = torch.randperm(len(X))\nX, y = X[perm], y[perm]\nX_train, y_train = X[:1600], y[:1600]\nX_val, y_val = X[1600:], y[1600:]",
+        risk: "Đo accuracy trên chính tập train thì không phát hiện được overfitting." },
+      { n: 4, t: "Dựng mạng, loss, optimizer", s: "MLP 2→32→32→2 · Adam",
+        what: "Mạng 3 lớp Linear xen ReLU, ra 2 logits. Hàm loss cross-entropy, bộ tối ưu Adam với lr = 0.01.",
+        tools: ["nn.Sequential", "nn.Linear", "nn.ReLU", "nn.CrossEntropyLoss", "torch.optim.Adam"],
+        tech: "Linear = Wx + b. ReLU tạo phi tuyến để uốn được đường biên. Adam = momentum + learning rate riêng cho từng tham số.",
+        code: "model = nn.Sequential(\n    nn.Linear(2, 32), nn.ReLU(),\n    nn.Linear(32, 32), nn.ReLU(),\n    nn.Linear(32, 2),\n)\nloss_fn = nn.CrossEntropyLoss()\noptimizer = torch.optim.Adam(model.parameters(), lr=1e-2)",
+        risk: "Xoá hết ReLU thì cả mạng chỉ tương đương một Linear, accuracy rơi về khoảng 85%." },
+      { n: 5, t: "Bắt đầu epoch", s: "model.train() · randperm", group: "epoch",
+        what: "Bật chế độ train và xáo trộn lại thứ tự mẫu cho epoch này.",
+        tools: ["model.train()", "torch.randperm"],
+        tech: "Mỗi epoch các batch khác nhau nên gradient ít bị lệch theo thứ tự dữ liệu.",
+        code: "model.train()\nidx = torch.randperm(len(X_train))\nrunning_loss = 0.0",
+        risk: "Không xáo trộn thì model thấy cùng chuỗi batch mỗi epoch, dễ học lệch." },
+      { n: 6, t: "Lấy mini-batch", s: "64 mẫu", group: "batch",
+        what: "Cắt 64 mẫu theo chỉ số đã xáo trộn.",
+        tools: ["tensor indexing"],
+        tech: "Mini-batch gradient descent: nhanh hơn dùng cả 1600 mẫu, có nhiễu giúp thoát điểm kẹt.",
+        code: "batch = idx[i : i + BATCH_SIZE]\nxb, yb = X_train[batch], y_train[batch]",
+        risk: "Batch = 1 thì gradient rất nhiễu, loss nhảy loạn. Batch = 1600 thì mỗi epoch chỉ cập nhật 1 lần." },
+      { n: 7, t: "Forward", s: "logits = model(xb)", group: "batch", core: true,
+        what: "Dữ liệu đi qua các lớp, ra tensor logits shape (64, 2).",
+        tools: ["model(xb)", "autograd"],
+        tech: "Autograd ghi lại đồ thị tính toán của mọi phép toán để dùng cho bước backward.",
+        code: "logits = model(xb)",
+        risk: "Đây là bước bắt buộc, không thể bỏ." },
+      { n: 8, t: "Tính loss", s: "loss_fn(logits, yb)", group: "batch", core: true,
+        what: "So logits với nhãn đúng, ra một con số: càng nhỏ là model đoán càng đúng.",
+        tools: ["nn.CrossEntropyLoss"],
+        tech: "Cross-entropy = log_softmax + negative log-likelihood. Đừng tự thêm softmax vào cuối mạng.",
+        code: "loss = loss_fn(logits, yb)",
+        risk: "Thêm nn.Softmax vào cuối model thì softmax bị áp hai lần, model học rất chậm." },
+      { n: 9, t: "Xoá gradient cũ", s: "optimizer.zero_grad()", group: "batch", core: true,
+        what: "Reset .grad của mọi tham số về 0.",
+        tools: ["optimizer.zero_grad"],
+        tech: "PyTorch cộng dồn gradient qua mỗi lần backward, nên phải xoá trước khi tính mới.",
+        code: "optimizer.zero_grad()",
+        risk: "Thử comment dòng này: gradient cộng dồn qua các bước, bước cập nhật ngày càng lớn và loss dao động mạnh." },
+      { n: 10, t: "Backward", s: "loss.backward()", group: "batch", core: true,
+        what: "Tính đạo hàm của loss theo từng trọng số, lưu vào param.grad.",
+        tools: ["autograd"],
+        tech: "Backpropagation: áp dụng chain rule chạy ngược trên đồ thị đã ghi ở bước forward.",
+        code: "loss.backward()",
+        risk: "Bỏ đi thì .grad trống, optimizer không có gì để cập nhật và model không học." },
+      { n: 11, t: "Cập nhật trọng số", s: "optimizer.step()", group: "batch", core: true,
+        what: "Adam dùng gradient để chỉnh mỗi trọng số một chút theo hướng làm loss giảm.",
+        tools: ["torch.optim.Adam"],
+        tech: "Gradient descent: param -= lr × bước đã điều chỉnh.",
+        code: "optimizer.step()\nrunning_loss += loss.item() * len(batch)",
+        risk: "lr = 1 thì mỗi bước nhảy quá xa và loss phân kỳ. lr = 1e-5 thì 50 epoch gần như không học được gì." },
+      { n: 12, t: "Đánh giá trên val", s: "eval() · no_grad()", group: "epoch",
+        what: "Chạy model trên 400 điểm val, không học, đo val_loss và accuracy.",
+        tools: ["model.eval()", "torch.no_grad()", "argmax"],
+        tech: "Tắt autograd nên nhanh hơn và ít RAM hơn. argmax trên chiều class ra nhãn dự đoán.",
+        code: "model.eval()\nwith torch.no_grad():\n    val_logits = model(X_val)\n    val_acc = (val_logits.argmax(dim=1) == y_val).float().mean().item()",
+        risk: "Quên no_grad thì vẫn đúng kết quả nhưng tốn bộ nhớ dựng đồ thị không dùng tới." },
+      { n: 13, t: "In log", s: "train_loss · val_loss · val_acc", group: "epoch",
+        what: "Mỗi 5 epoch in một dòng để theo dõi tiến trình.",
+        tools: ["print", ".item()"],
+        tech: "Theo dõi train_loss và val_loss cùng lúc: train giảm mà val tăng là dấu hiệu overfitting.",
+        code: "epoch  49 | train_loss 0.1505 | val_loss 0.1270 | val_acc 0.955",
+        risk: "Không log thì không biết model đang học, đã bão hoà hay đang overfit." },
+    ],
+  },
+};
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const state = { async: 0, torch: 0 };
+
+function nodeBtn(flow, node, i) {
+  return `<button class="node${node.core ? " core" : ""}" data-flow="${flow}" data-i="${i}" aria-pressed="false">
+    <span class="n">${String(node.n).padStart(2, "0")}</span><span class="t">${esc(node.t)}</span><span class="s">${esc(node.s)}</span></button>`;
+}
+const arrow = '<div class="arrow" aria-hidden="true"></div>';
+
+function renderAsync() {
+  const N = FLOWS.async.nodes;
+  const top = N.slice(0, 4).map((n, i) => nodeBtn("async", n, i)).join(arrow);
+  const task = N.slice(4, 8).map((n, i) => nodeBtn("async", n, i + 4)).join(arrow);
+  const lanes = [1, 2, 3, 4, 5].map(k => `<span class="lane">review ${k}</span>`).join("") + '<span class="lane wait">review 6 · chờ</span>';
+  const bottom = N.slice(8).map((n, i) => nodeBtn("async", n, i + 8)).join(arrow);
+  document.getElementById("diagram-async").innerHTML = `${top}${arrow}
+    <div class="group"><span class="glabel">mỗi task · ×6 đồng thời</span><span class="gnote">Semaphore(5)</span>
+      <div class="lanes">${lanes}</div>${task}</div>${arrow}${bottom}`;
+}
+
+function renderTorch() {
+  const N = FLOWS.torch.nodes;
+  const setup = N.slice(0, 4).map((n, i) => nodeBtn("torch", n, i)).join(arrow);
+  const batch = N.slice(5, 11).map((n, i) => nodeBtn("torch", n, i + 5)).join(arrow);
+  document.getElementById("diagram-torch").innerHTML = `${setup}${arrow}
+    <div class="group"><span class="glabel">for epoch in range(50)</span><span class="gnote">↻ 50 lần</span>
+      ${nodeBtn("torch", N[4], 4)}${arrow}
+      <div class="group inner"><span class="glabel">for batch · 1600 / 64</span><span class="gnote">↻ 25 lần</span>${batch}</div>
+      ${arrow}${nodeBtn("torch", N[11], 11)}${arrow}${nodeBtn("torch", N[12], 12)}
+    </div>`;
+}
+
+function select(flow, i) {
+  const nodes = FLOWS[flow].nodes;
+  state[flow] = i;
+  document.querySelectorAll(`.node[data-flow="${flow}"]`).forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
+  const n = nodes[i];
+  const where = n.group === "task" ? "Chạy trong từng task (×6)" : n.group === "batch" ? "Chạy 1250 lần (50 epoch × 25 batch)" : n.group === "epoch" ? "Chạy 50 lần, mỗi epoch một lần" : "Chạy 1 lần";
+  document.getElementById(`insp-${flow}`).innerHTML = `
+    <div class="head"><span class="num">NODE ${String(n.n).padStart(2, "0")} / ${nodes.length} · ${where}</span><h3>${esc(n.t)}</h3></div>
+    <div class="field"><span class="k">Làm gì</span><p class="v">${esc(n.what)}</p></div>
+    <div class="field"><span class="k">Công cụ</span><div class="chips">${n.tools.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div></div>
+    <div class="field"><span class="k">Kỹ thuật</span><p class="v">${esc(n.tech)}</p></div>
+    <div class="field"><span class="k">Code</span><pre class="code"><code>${esc(n.code)}</code></pre></div>
+    <div class="field"><span class="k">Nếu bỏ đi / làm sai</span><p class="risk">${esc(n.risk)}</p></div>
+    <div class="navbtns"><button data-nav="-1" ${i === 0 ? "disabled" : ""}>← Node trước</button><button data-nav="1" ${i === nodes.length - 1 ? "disabled" : ""}>Node sau →</button></div>`;
+}
+
+document.addEventListener("click", e => {
+  const node = e.target.closest(".node");
+  if (node) return select(node.dataset.flow, +node.dataset.i);
+  const nav = e.target.closest("[data-nav]");
+  if (nav) {
+    const flow = nav.closest(".inspector").id.replace("insp-", "");
+    const i = state[flow] + +nav.dataset.nav;
+    select(flow, i);
+    document.querySelector(`.node[data-flow="${flow}"][data-i="${i}"]`).focus({ preventScroll: true });
+    return;
+  }
+  const tab = e.target.closest(".tab");
+  if (tab) {
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t === tab)));
+    document.getElementById("panel-async").hidden = tab.dataset.flow !== "async";
+    document.getElementById("panel-torch").hidden = tab.dataset.flow !== "torch";
+    return;
+  }
+  const copy = e.target.closest(".copy");
+  if (copy) {
+    const text = copy.dataset.copy;
+    const done = () => { copy.textContent = "Đã copy"; setTimeout(() => (copy.textContent = "Copy"), 1400); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(copy.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+    return;
+  }
+  const c = e.target.closest(".sim-controls button");
+  if (c) runSim(+c.dataset.c);
+});
+
+const DUR = [1.2, 0.9, 1.5, 1.1, 1.3, 1.0];
+const SCALE = DUR.reduce((a, b) => a + b, 0);
+function schedule(limit) {
+  const free = Array(limit).fill(0);
+  return DUR.map(d => {
+    const k = free.indexOf(Math.min(...free));
+    const start = free[k];
+    free[k] = start + d;
+    return { start, d };
+  });
+}
+function runSim(limit) {
+  document.querySelectorAll(".sim-controls button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.c === limit)));
+  const plan = schedule(limit);
+  const total = Math.max(...plan.map(p => p.start + p.d));
+  const pct = v => (v / SCALE * 100).toFixed(2) + "%";
+  const rows = plan.map((p, i) => `<div class="bar-row"><span class="lbl">review ${i + 1}</span><div class="track">
+      ${p.start > 0 ? `<div class="bar waited" style="left:0;width:${pct(p.start)}" title="chờ"></div>` : ""}
+      <div class="bar anim" style="left:${pct(p.start)};width:${pct(p.d)};animation-delay:${(p.start / SCALE * 1.2).toFixed(2)}s"></div></div></div>`).join("");
+  const ticks = [0, 1, 2, 3, 4, 5, 6, 7].filter(t => t <= SCALE).map(t => `<span>${t}s</span>`).join("");
+  document.getElementById("bars").innerHTML = rows + `<div class="axis"><div></div><div>${ticks}</div></div>`;
+  const note = limit === 1 ? "Mỗi request phải đợi request trước xong: thời gian = tổng cả 6." :
+    limit >= 6 ? "Cả 6 chạy cùng lúc: thời gian ≈ request chậm nhất. Nhanh nhất, nhưng với 10.000 review sẽ dính rate limit." :
+    `Tối đa ${limit} request cùng lúc; vạch gạch là thời gian chờ slot.`;
+  document.getElementById("sim-result").innerHTML = `Tổng thời gian: <strong>${total.toFixed(1)}s</strong> (tuần tự là ${SCALE.toFixed(1)}s). ${note}`;
+}
+
+renderAsync();
+renderTorch();
+select("async", 0);
+select("torch", 6);
+runSim(5);
+</script>
+</body>
+</html>

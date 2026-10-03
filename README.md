@@ -24,3 +24,7 @@ cp .env.example .env   # then set OPENAI_API_KEY
 uv run week1/train.py
 uv run week1/sentiment.py
 ```
+
+## Docs
+
+Open `docs/flow-map.html` in a browser for an interactive diagram of both scripts: run order, the tool and technique behind each step, and a concurrency simulation.
