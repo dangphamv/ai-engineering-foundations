@@ -46,4 +46,4 @@ uv run week1/predict.py 0 1 --model models/moons-mlp-1m
 
 ## Docs
 
-Open `docs/flow-map.html` in a browser for an interactive diagram of both scripts: run order, the tool and technique behind each step, and a concurrency simulation.
+Open `docs/flow-map.html` in a browser for an interactive guide: run order, PyTorch and pydantic basics, the tool and technique behind each step, a step-by-step training walkthrough with real numbers, and the trained model running in the browser.

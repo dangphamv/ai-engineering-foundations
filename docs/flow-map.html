@@ -149,6 +149,72 @@ pre.code { margin: 0; background: var(--code-bg); border-radius: 6px; padding: 1
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 footer { color: var(--muted); font-size: 13px; }
+
+/* Explainer sections */
+.sec { display: grid; gap: 16px; }
+.sec-head { display: grid; gap: 6px; }
+.panel { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.lib-name { font: 700 20px var(--font-mono); }
+.lib.async-l .lib-name { color: var(--async); }
+.lib.torch-l .lib-name { color: var(--torch); }
+.kv { display: grid; gap: 10px; }
+.kv > div { display: grid; gap: 2px; }
+.kv .k { font: 600 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.kv ul { margin: 0; padding-left: 18px; display: grid; gap: 2px; }
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 600 11px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+
+/* One-point trace */
+.trace-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { font: 600 13px var(--font-body); border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); border-radius: 4px; padding: 7px 14px; cursor: pointer; }
+.btn.primary { background: var(--torch); border-color: var(--torch); color: var(--sheet); }
+.btn:disabled { opacity: .4; cursor: default; }
+.stage { font: 600 12px var(--font-mono); color: var(--muted); }
+.probbar { display: flex; height: 34px; border-radius: 4px; overflow: hidden; font: 600 12px var(--font-mono); }
+.probbar > div { display: flex; align-items: center; padding: 0 10px; white-space: nowrap; overflow: hidden; transition: flex-basis .4s ease; color: var(--sheet); }
+.probbar .p0 { background: var(--torch); }
+.probbar .p1 { background: var(--muted); }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.metric { border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; }
+.metric .k { font: 600 11px var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.metric .v { font: 600 20px var(--font-mono); font-variant-numeric: tabular-nums; }
+.metric .d { font-size: 12px; color: var(--muted); }
+.say { background: var(--torch-soft); border-radius: 6px; padding: 12px 14px; font-size: 14px; }
+.analogy { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.analogy > div { border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; font-size: 13px; }
+.analogy b { font-family: var(--font-mono); font-size: 12px; color: var(--torch); }
+.analogy > div.on { border-color: var(--torch); background: var(--torch-soft); }
+
+/* Loss slider */
+.slider-row { display: grid; gap: 8px; }
+input[type="range"] { width: 100%; accent-color: var(--torch); }
+.lossbar { height: 14px; background: var(--code-bg); border-radius: 3px; overflow: hidden; }
+.lossbar > div { height: 100%; background: var(--torch); transition: width .15s; }
+
+/* Moons canvas */
+.canvas-wrap { position: relative; width: 100%; max-width: 100%; }
+canvas { display: block; width: 100%; border-radius: 6px; border: 1px solid var(--rule); cursor: crosshair; touch-action: manipulation; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.pred-out { font-size: 14px; min-height: 44px; }
+
+/* Log */
+.log { font: 13px/1.7 var(--font-mono); background: var(--code-bg); border-radius: 6px; padding: 12px; overflow-x: auto; white-space: pre; }
+.log .ph1 { color: var(--torch); font-weight: 600; }
+.notes { display: grid; gap: 8px; padding-left: 20px; margin: 0; }
+
+/* Lifecycle */
+.life { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
+@media (max-width: 700px) { .life { grid-template-columns: 1fr; } .life .mid { transform: rotate(90deg); justify-self: center; } }
+.life .side { border: 1.5px solid var(--rule); border-radius: 8px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.life .side.t { border-color: var(--torch); }
+.life .side.i { border-color: var(--async); }
+.life .mid { align-self: center; font: 600 12px var(--font-mono); color: var(--muted); text-align: center; }
+.life ol { margin: 0; padding-left: 18px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -169,6 +235,61 @@ footer { color: var(--muted); font-size: 13px; }
       <div class="step"><span class="step-n">Bước 2</span><h3>Điền API key</h3><div class="cmd"><code>cp .env.example .env</code><button class="copy" data-copy="cp .env.example .env">Copy</button></div><p>Mở <code>.env</code>, thay <code>sk-...</code> bằng key OpenAI thật.</p></div>
       <div class="step"><span class="step-n">Bước 3</span><h3>Gọi LLM <span class="tag paid">tốn vài cent</span></h3><div class="cmd"><code>uv run week1/sentiment.py</code><button class="copy" data-copy="uv run week1/sentiment.py">Copy</button></div><p>Cần internet. Lỗi lúc này gần như chắc chắn do key hoặc credit.</p></div>
       <div class="step"><span class="step-n">Bước 4</span><h3>Thí nghiệm</h3><p>Sửa một chỗ trong code, chạy lại, so kết quả. Mỗi node bên dưới có mục “Nếu bỏ đi” gợi ý chỗ để thử.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="libs-h">
+    <div class="sec-head">
+      <h2 id="libs-h">Hai thư viện chính: PyTorch và pydantic</h2>
+      <p class="lede">Mỗi file dựa vào một thư viện chính. PyTorch dùng để tạo và train model. Pydantic dùng để kiểm tra dữ liệu có đúng hình dạng mong muốn không.</p>
+    </div>
+    <div class="two">
+      <div class="panel lib torch-l">
+        <span class="lib-name">PyTorch</span>
+        <div class="kv">
+          <div><span class="k">Khái niệm</span><p>Thư viện deep learning do Meta phát triển. Nó làm 2 việc chính: tính toán trên <b>tensor</b> (mảng số nhiều chiều) và <b>tự tính đạo hàm</b> cho mọi phép tính.</p></div>
+          <div><span class="k">Cơ chế</span>
+            <ul>
+              <li><b>Tensor:</b> mọi dữ liệu đều là mảng số. 2000 điểm là một tensor shape <code>(2000, 2)</code>.</li>
+              <li><b>Autograd:</b> khi chạy forward, PyTorch ghi lại mọi phép tính thành một đồ thị. <code>backward()</code> đi ngược đồ thị đó để tính gradient.</li>
+              <li><b>nn.Module:</b> các lớp như <code>Linear</code> giữ tham số (trọng số) bên trong.</li>
+              <li><b>optim:</b> bộ tối ưu như Adam dùng gradient để sửa tham số.</li>
+              <li>Chạy được trên CPU, GPU NVIDIA (<code>cuda</code>) và chip Apple (<code>mps</code>).</li>
+            </ul>
+          </div>
+          <div><span class="k">Ví dụ autograd</span><pre class="code"><code>x = torch.tensor(2.0, requires_grad=True)
+y = x**2 + 3*x      # y = 10
+y.backward()        # tự tính dy/dx = 2x + 3
+x.grad              # tensor(7.)</code></pre></div>
+          <div><span class="k">Công dụng</span><p>Train và chạy model: nhận diện ảnh, xử lý ngôn ngữ, LLM. Phần lớn model trên Hugging Face (Llama, Qwen…) được viết bằng PyTorch.</p></div>
+          <div><span class="k">Trong repo</span><p><code>model.py</code>, <code>train.py</code>, <code>predict.py</code></p></div>
+        </div>
+      </div>
+      <div class="panel lib async-l">
+        <span class="lib-name">pydantic</span>
+        <div class="kv">
+          <div><span class="k">Khái niệm</span><p>Thư viện <b>kiểm tra và chuyển đổi dữ liệu</b> dựa trên type hint của Python. Bạn mô tả dữ liệu đúng trông thế nào, pydantic chặn mọi thứ không khớp.</p></div>
+          <div><span class="k">Cơ chế</span>
+            <ul>
+              <li>Khai báo một class kế thừa <code>BaseModel</code>, mỗi field có kiểu và ràng buộc.</li>
+              <li>Khi nhận dữ liệu (dict hoặc JSON), pydantic kiểm tra từng field. Lõi viết bằng Rust nên chạy rất nhanh.</li>
+              <li>Hợp lệ thì trả về một object có kiểu rõ ràng. Sai thì ném <code>ValidationError</code>, liệt kê đủ từng lỗi.</li>
+              <li>Tự sinh JSON Schema từ class (<code>model_json_schema()</code>).</li>
+            </ul>
+          </div>
+          <div><span class="k">Ví dụ kiểm tra</span><pre class="code"><code>class Sentiment(BaseModel):
+    label: Literal["positive", "negative", "neutral"]
+    confidence: float = Field(ge=0, le=1)
+
+Sentiment.model_validate_json('{"label": "positive", "confidence": 0.9}')
+# ✅ Sentiment(label='positive', confidence=0.9)
+
+Sentiment.model_validate_json('{"label": "happy", "confidence": 1.7}')
+# ❌ ValidationError: 2 lỗi (label không hợp lệ, confidence &gt; 1)</code></pre></div>
+          <div><span class="k">Công dụng</span><p>Kiểm tra request của API (FastAPI dùng pydantic), đọc file cấu hình, và kiểm tra output của LLM trước khi tin dùng.</p></div>
+          <div><span class="k">Trong repo</span><p>Class <code>Sentiment</code> trong <code>sentiment.py</code></p></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -211,6 +332,149 @@ footer { color: var(--muted); font-size: 13px; }
         <div class="diagram" id="diagram-torch"></div>
         <aside class="inspector" id="insp-torch" aria-live="polite"></aside>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="trace-h">
+    <div class="sec-head">
+      <h2 id="trace-h">Training bằng con số thật: theo dõi một điểm</h2>
+      <p class="lede">Lấy điểm <code>(0, 1)</code>, đáp án đúng là trăng trên (lớp 0). Các con số dưới đây chạy thật trên MoonsMLP mới khởi tạo, chưa học gì. Bấm “Lần tiếp theo” để đi qua từng bước.</p>
+    </div>
+    <div class="panel">
+      <div class="analogy" id="analogy">
+        <div data-k="forward"><b>Forward</b>Học sinh làm bài</div>
+        <div data-k="loss"><b>Loss</b>Giáo viên chấm điểm phạt</div>
+        <div data-k="backward"><b>Backward</b>Chỉ ra chỗ sai, hướng sửa</div>
+        <div data-k="step"><b>Step</b>Sửa cách nghĩ một chút</div>
+      </div>
+      <div class="trace-controls">
+        <button class="btn primary" id="trace-next">Lần tiếp theo →</button>
+        <button class="btn" id="trace-reset">Làm lại</button>
+        <span class="stage" id="trace-stage"></span>
+      </div>
+      <div style="display:grid;gap:6px">
+        <span class="stage">Model đoán điểm (0, 1) thuộc trăng nào</span>
+        <div class="probbar" aria-hidden="true"><div class="p0" id="pb0"></div><div class="p1" id="pb1"></div></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><span class="k">Đoán đúng</span><span class="v" id="m-p"></span><span class="d">xác suất cho trăng trên</span></div>
+        <div class="metric"><span class="k">Loss</span><span class="v" id="m-loss"></span><span class="d">điểm phạt, càng nhỏ càng tốt</span></div>
+        <div class="metric"><span class="k">1 tham số</span><span class="v" id="m-w"></span><span class="d">1 trong 1.218 con số</span></div>
+        <div class="metric"><span class="k">Gradient</span><span class="v" id="m-g"></span><span class="d">hướng sửa của con số đó</span></div>
+      </div>
+      <p class="say" id="trace-say" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="loss-h">
+    <div class="sec-head">
+      <h2 id="loss-h">Loss là gì: kéo thử</h2>
+      <p class="lede">Loss = <code>−ln(xác suất model cho đáp án đúng)</code>. Không cần nhớ công thức: model càng tự tin vào đáp án đúng thì loss càng gần 0.</p>
+    </div>
+    <div class="panel">
+      <div class="slider-row">
+        <label for="loss-slider">Model cho đáp án đúng: <strong id="loss-p" class="mono"></strong></label>
+        <input type="range" id="loss-slider" min="1" max="99" value="48">
+        <div class="lossbar" aria-hidden="true"><div id="loss-fill"></div></div>
+        <p>Loss = <strong id="loss-v" class="mono"></strong> · <span id="loss-note"></span></p>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Đáp án đúng được</th><th class="num">Loss</th><th>Nghĩa</th></tr></thead>
+        <tbody>
+          <tr><td>10%</td><td class="num">2.30</td><td>Tự tin vào đáp án sai, phạt nặng</td></tr>
+          <tr><td>50%</td><td class="num">0.69</td><td>Đoán mò</td></tr>
+          <tr><td>86%</td><td class="num">0.15</td><td>Mức train_loss cuối cùng trong log</td></tr>
+          <tr><td>99%</td><td class="num">0.01</td><td>Gần như chắc chắn và đúng</td></tr>
+        </tbody>
+      </table></div>
+      <p class="lede"><b>Loss khác accuracy:</b> đoán đúng với 51% hay 99% thì accuracy tính như nhau, nhưng loss là 0.67 và 0.01. Model học từ loss vì loss cho biết cần sửa nhiều hay ít.</p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="data-h">
+    <div class="sec-head">
+      <h2 id="data-h">Dữ liệu, nhãn và model đã học</h2>
+      <p class="lede">Data train không nằm trong file nào: <code>make_moons</code> sinh 2000 điểm trong RAM mỗi lần chạy. Code tự vẽ điểm theo công thức nên biết chắc nhãn của từng điểm. Nền màu là vùng mà <b>model thật của bạn</b> (1.218 tham số, nhúng trong trang) chia ra. Bấm vào bất kỳ đâu để hỏi model.</p>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <span style="--c: var(--torch)">Nhãn 0 · trăng trên</span>
+        <span style="--c: var(--async)">Nhãn 1 · trăng dưới</span>
+        <span>Nền: vùng model đoán. Điểm có màu khác nền là điểm model đoán sai</span>
+      </div>
+      <div class="canvas-wrap"><canvas id="moons" aria-label="Biểu đồ hai mặt trăng và vùng phân chia của model"></canvas></div>
+      <p class="pred-out" id="pred-out" aria-live="polite">Bấm vào biểu đồ để xem model dự đoán.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>X: câu hỏi</th><th>y: đáp án (nhãn)</th><th>Dùng để</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">(0.0, 1.0)</td><td>0 · trăng trên</td><td>1.600 cặp train: model học từ đây</td></tr>
+          <tr><td class="mono">(1.5, −0.3)</td><td>1 · trăng dưới</td><td>400 cặp val: model không bao giờ thấy, chỉ dùng để chấm điểm</td></tr>
+        </tbody>
+      </table></div>
+      <p class="lede">Điểm trên biểu đồ được vẽ lại bằng JavaScript theo cùng công thức, chỉ để minh hoạ. Vùng nền thì được tính bằng đúng trọng số trong <code>models/moons-mlp/model.safetensors</code>.</p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="log-h">
+    <div class="sec-head">
+      <h2 id="log-h">Đọc log sau khi train</h2>
+      <p class="lede">Log thật từ <code>uv run train.py</code>, mỗi 5 epoch in một dòng.</p>
+    </div>
+    <div class="panel">
+      <div class="log"><span class="ph1">epoch   0 | train_loss 0.4131 | val_loss 0.2635 | val_acc 0.895
+epoch   5 | train_loss 0.1645 | val_loss 0.1366 | val_acc 0.952</span>
+epoch  10 | train_loss 0.1561 | val_loss 0.1338 | val_acc 0.955
+epoch  15 | train_loss 0.1545 | val_loss 0.1375 | val_acc 0.945
+epoch  20 | train_loss 0.1523 | val_loss 0.1254 | val_acc 0.957
+epoch  25 | train_loss 0.1649 | val_loss 0.1383 | val_acc 0.952
+epoch  30 | train_loss 0.1570 | val_loss 0.1308 | val_acc 0.947
+epoch  35 | train_loss 0.1540 | val_loss 0.1328 | val_acc 0.955
+epoch  40 | train_loss 0.1528 | val_loss 0.1367 | val_acc 0.952
+epoch  45 | train_loss 0.1487 | val_loss 0.1236 | val_acc 0.960
+epoch  49 | train_loss 0.1505 | val_loss 0.1270 | val_acc 0.955</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Cột</th><th>Nghĩa dễ hiểu</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">epoch</td><td>Lần thứ mấy model học hết 1.600 điểm (25 batch × 64 điểm)</td></tr>
+          <tr><td class="mono">train_loss</td><td>Điểm phạt trung bình trên dữ liệu đang học</td></tr>
+          <tr><td class="mono">val_loss</td><td>Điểm phạt trên 400 điểm chưa từng học. Thấp nghĩa là model hiểu thật, không học thuộc</td></tr>
+          <tr><td class="mono">val_acc</td><td>Tỷ lệ đoán đúng: 0.955 = 382 trên 400 điểm</td></tr>
+        </tbody>
+      </table></div>
+      <ol class="notes">
+        <li><b>Epoch 0 → 5 (tô màu):</b> học rất nhanh, loss từ 0.41 xuống 0.16, accuracy từ 89.5% lên 95.2%.</li>
+        <li><b>Epoch 5 → 49:</b> chững lại quanh 95–96%. Khoảng 4–5% điểm bị nhiễu nằm lấn sang trăng kia, không model nào đoán đúng được. Đó là mức trần.</li>
+        <li><b>Dao động 0.945 ↔ 0.960</b> chỉ tương ứng khoảng 6 điểm trên 400, là bình thường.</li>
+        <li><b>Không overfitting:</b> val_loss không tăng dần theo thời gian.</li>
+        <li><b>val_loss thấp hơn train_loss không phải lỗi:</b> train_loss là trung bình trong lúc model còn đang học dở, val_loss đo ở cuối epoch.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="two-h">
+    <div class="sec-head">
+      <h2 id="two-h">Hai tính năng khác nhau thế nào</h2>
+      <p class="lede">Về code, hai file hoàn toàn độc lập. Về khái niệm, chúng là hai nửa của cùng một vòng đời model.</p>
+    </div>
+    <div class="panel">
+      <div class="life">
+        <div class="side t"><span class="eyebrow">Training · train.py</span><ol><li>Dữ liệu có nhãn</li><li>forward → loss → backward → step</li><li>Lặp 1.250 lần</li><li>Ra model đã học (1.218 con số)</li></ol></div>
+        <div class="mid">lưu / deploy<br>→</div>
+        <div class="side i"><span class="eyebrow">Inference · sentiment.py, predict.py</span><ol><li>Input mới</li><li>Chỉ forward, không học</li><li>Ra dự đoán</li></ol></div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th></th><th>sentiment.py</th><th>train.py</th></tr></thead>
+        <tbody>
+          <tr><td>Model</td><td>Của OpenAI, có sẵn</td><td>MoonsMLP của bạn, tự tạo</td></tr>
+          <tr><td>Việc làm</td><td><b>Dùng</b> model (inference)</td><td><b>Tạo ra</b> model (training)</td></tr>
+          <tr><td>Input</td><td>Văn bản</td><td>2 con số (toạ độ)</td></tr>
+          <tr><td>Tham số</td><td>Hàng tỷ (OpenAI không công bố)</td><td>1.218</td></tr>
+          <tr><td>Chạy ở đâu</td><td>Server OpenAI, cần key</td><td>Laptop, miễn phí</td></tr>
+          <tr><td>Thư viện chính</td><td>openai + pydantic</td><td>PyTorch</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Vì sao không dùng MoonsMLP thay OpenAI?</b> Lớp đầu là <code>Linear(2, …)</code>, chỉ nhận đúng 2 con số. Nó không đọc được chữ. Muốn thay OpenAI thì phải train một model cho văn bản.</p>
+      <p><b>Khi nào hai file nối với nhau:</b> dùng <code>sentiment.py</code> gán nhãn vài trăm review (OpenAI làm “thầy”), rồi dùng nhãn đó train một model văn bản nhỏ bằng đúng vòng lặp của <code>train.py</code> (“trò”). Cách này gọi là distillation.</p>
     </div>
   </section>
 
@@ -307,7 +571,7 @@ const FLOWS = {
         what: "Mạng 3 lớp Linear xen ReLU, ra 2 logits. Hàm loss cross-entropy, bộ tối ưu Adam với lr = 0.01.",
         tools: ["nn.Sequential", "nn.Linear", "nn.ReLU", "nn.CrossEntropyLoss", "torch.optim.Adam"],
         tech: "Linear = Wx + b. ReLU tạo phi tuyến để uốn được đường biên. Adam = momentum + learning rate riêng cho từng tham số.",
-        code: "model = nn.Sequential(\n    nn.Linear(2, 32), nn.ReLU(),\n    nn.Linear(32, 32), nn.ReLU(),\n    nn.Linear(32, 2),\n)\nloss_fn = nn.CrossEntropyLoss()\noptimizer = torch.optim.Adam(model.parameters(), lr=1e-2)",
+        code: "model = MoonsMLP(hidden_size=32, num_layers=2)   # 1,218 tham số\nloss_fn = nn.CrossEntropyLoss()\noptimizer = torch.optim.Adam(model.parameters(), lr=1e-2)",
         risk: "Xoá hết ReLU thì cả mạng chỉ tương đương một Linear, accuracy rơi về khoảng 85%." },
       { n: 5, t: "Bắt đầu epoch", s: "model.train() · randperm", group: "epoch",
         what: "Bật chế độ train và xáo trộn lại thứ tự mẫu cho epoch này.",
@@ -363,6 +627,12 @@ const FLOWS = {
         tech: "Theo dõi train_loss và val_loss cùng lúc: train giảm mà val tăng là dấu hiệu overfitting.",
         code: "epoch  49 | train_loss 0.1505 | val_loss 0.1270 | val_acc 0.955",
         risk: "Không log thì không biết model đang học, đã bão hoà hay đang overfit." },
+      { n: 14, t: "Lưu model", s: "model.save_pretrained(...)",
+        what: "Ghi kiến trúc vào config.json và 1.218 tham số vào model.safetensors trong thư mục models/moons-mlp.",
+        tools: ["huggingface_hub.PyTorchModelHubMixin", "safetensors"],
+        tech: "Cùng format với model trên Hugging Face. predict.py dùng from_pretrained() để load lại và dự đoán.",
+        code: "model.save_pretrained(args.out)\n\n# predict.py\nmodel = MoonsMLP.from_pretrained(\"models/moons-mlp\")",
+        risk: "Không lưu thì model chỉ nằm trong RAM và mất khi script kết thúc." },
     ],
   },
 };
@@ -396,7 +666,7 @@ function renderTorch() {
       ${nodeBtn("torch", N[4], 4)}${arrow}
       <div class="group inner"><span class="glabel">for batch · 1600 / 64</span><span class="gnote">↻ 25 lần</span>${batch}</div>
       ${arrow}${nodeBtn("torch", N[11], 11)}${arrow}${nodeBtn("torch", N[12], 12)}
-    </div>`;
+    </div>${arrow}${nodeBtn("torch", N[13], 13)}`;
 }
 
 function select(flow, i) {
@@ -472,6 +742,133 @@ function runSim(limit) {
   document.getElementById("sim-result").innerHTML = `Tổng thời gian: <strong>${total.toFixed(1)}s</strong> (tuần tự là ${SCALE.toFixed(1)}s). ${note}`;
 }
 
+// ---- One-point trace (real numbers from MoonsMLP, seed 0, point (0, 1), label 0)
+const TRACE = [
+  { k: ["forward"], stage: "Lần 1 · Forward", p: 0.484, loss: null, w: "0.0761", g: "—",
+    say: "Model chưa học gì nên đoán 48.4% trăng trên, 51.6% trăng dưới. Gần như đoán mò, và còn hơi nghiêng về đáp án sai." },
+  { k: ["loss"], stage: "Lần 1 · Loss", p: 0.484, loss: 0.7249, w: "0.0761", g: "—",
+    say: "Chấm điểm: đáp án đúng chỉ được 48.4%, nên loss = −ln(0.484) = 0.72. Đoán mò hoàn toàn (50%) là 0.69." },
+  { k: ["backward"], stage: "Lần 1 · Backward", p: 0.484, loss: 0.7249, w: "0.0761", g: "−0.516",
+    say: "Gradient của con số 0.0761 là −0.516. Dấu âm nghĩa là tăng con số này lên thì loss giảm. 1.217 con số còn lại cũng có gradient riêng." },
+  { k: ["step"], stage: "Lần 1 · Step", p: 0.484, loss: 0.7249, w: "0.0861", g: "−0.516",
+    say: "Adam sửa con số đó từ 0.0761 lên 0.0861, chỉ nhích 0.01 (learning rate). Sửa quá mạnh thì dễ sửa lố. Cả 1.218 con số đều được sửa cùng lúc." },
+  { k: ["forward", "loss", "backward", "step"], stage: "Lần 2", p: 0.534, loss: 0.6282, w: "0.0961", g: "−0.466",
+    say: "Đoán lại với các con số mới: đáp án đúng lên 53.4%, loss giảm còn 0.63. Lại tính gradient và sửa tiếp." },
+  { k: ["forward", "loss", "backward", "step"], stage: "Lần 3", p: 0.577, loss: 0.5498, w: "0.1060", g: "−0.423",
+    say: "57.7%, loss 0.55. Mỗi lần một chút, nhưng đều đặn đi đúng hướng." },
+  { k: ["forward", "loss", "backward", "step"], stage: "Sau 50 lần nữa", p: 0.9999, loss: 0.00008, w: "…", g: "≈ 0",
+    say: "Model đoán 99.99% trăng trên, loss gần 0. Đó là toàn bộ training: đoán → chấm → tìm hướng sửa → sửa một chút → lặp lại. train.py làm đúng như vậy với 64 điểm mỗi lần, 1.250 lần." },
+];
+let traceI = 0;
+function renderTrace() {
+  const t = TRACE[traceI];
+  document.getElementById("pb0").style.flexBasis = (t.p * 100) + "%";
+  document.getElementById("pb1").style.flexBasis = ((1 - t.p) * 100) + "%";
+  document.getElementById("pb0").textContent = `trên ${(t.p * 100).toFixed(t.p > 0.999 ? 2 : 1)}%`;
+  document.getElementById("pb1").textContent = t.p < 0.9 ? `dưới ${((1 - t.p) * 100).toFixed(1)}%` : "";
+  document.getElementById("m-p").textContent = (t.p * 100).toFixed(t.p > 0.999 ? 2 : 1) + "%";
+  document.getElementById("m-loss").textContent = t.loss == null ? "?" : t.loss < 0.001 ? "0.00008" : t.loss.toFixed(2);
+  document.getElementById("m-w").textContent = t.w;
+  document.getElementById("m-g").textContent = t.g;
+  document.getElementById("trace-stage").textContent = `${t.stage} · ${traceI + 1}/${TRACE.length}`;
+  document.getElementById("trace-say").textContent = t.say;
+  document.querySelectorAll("#analogy > div").forEach(d => d.classList.toggle("on", t.k.includes(d.dataset.k)));
+  document.getElementById("trace-next").disabled = traceI === TRACE.length - 1;
+}
+document.getElementById("trace-next").addEventListener("click", () => { traceI = Math.min(traceI + 1, TRACE.length - 1); renderTrace(); });
+document.getElementById("trace-reset").addEventListener("click", () => { traceI = 0; renderTrace(); });
+
+// ---- Loss slider
+const slider = document.getElementById("loss-slider");
+function renderLoss() {
+  const p = +slider.value / 100;
+  const loss = -Math.log(p);
+  document.getElementById("loss-p").textContent = slider.value + "%";
+  document.getElementById("loss-v").textContent = loss.toFixed(2);
+  document.getElementById("loss-fill").style.width = Math.min(100, loss / Math.log(100) * 100) + "%";
+  document.getElementById("loss-note").textContent =
+    p < 0.4 ? "nghiêng về đáp án sai, phạt nặng" : p < 0.6 ? "gần như đoán mò" : p < 0.9 ? "đúng nhưng chưa chắc chắn" : "tự tin và đúng";
+}
+slider.addEventListener("input", renderLoss);
+
+// ---- Real MoonsMLP weights (models/moons-mlp/model.safetensors)
+const W = [{"w":[[-0.24396,-0.59904],[0.13193,-0.82355],[-1.26046,0.17331],[-0.13529,0.71648],[0.7185,-0.05327],[-0.26557,0.72291],[-0.24165,-0.17925],[-0.93769,0.08716],[-0.51407,-1.01793],[0.15222,0.01653],[0.05915,0.6094],[0.79283,-0.02661],[-0.43874,-0.39475],[0.61492,-0.5317],[0.93523,-0.01082],[-1.20683,-0.33846],[0.76426,-0.06997],[-0.24194,-0.67132],[0.36991,0.46568],[0.65315,0.30826],[-1.13548,0.46205],[0.17106,0.21868],[0.76614,0.44653],[0.3101,0.39512],[0.53136,-0.05985],[-0.95719,0.43721],[-0.11729,0.20239],[-0.87847,-0.01878],[-0.81786,-0.71767],[0.0947,0.38759],[-0.32071,-0.40892],[-1.03615,-0.35846]],"b":[0.34238,-0.14439,-0.16645,-0.43193,-0.70541,-0.30809,0.1271,-0.10729,0.8821,-0.65094,-0.34659,-0.09412,0.46306,-0.51327,-0.02018,-0.22679,-0.7454,0.43056,0.00922,-0.9476,-0.15639,0.2392,0.00129,-0.07761,-0.58011,-0.27763,0.10308,-0.09245,-0.1315,-0.08534,0.20244,-0.19361]},{"w":[[-0.09047,-0.16618,-0.00533,-0.05655,-0.07828,-0.10859,-0.00934,-0.10945,-0.05712,-0.08127,-0.165,-0.07352,-0.15467,-0.15227,-0.05741,0.0743,-0.16013,0.01824,-0.02357,0.06045,0.0171,0.06902,-0.23533,-0.02451,-0.22792,0.07474,-0.14383,-0.03624,0.14973,0.08949,-0.12033,-0.10176],[-0.04632,-0.20023,-0.35121,0.00623,0.05017,0.07573,-0.1098,-0.01675,-0.12144,-0.16763,0.05067,-0.15659,-0.1448,-0.17011,-0.13125,0.12858,-0.08477,-0.0053,-0.02751,-0.01868,0.10964,-0.20387,-0.1279,0.22353,-0.12524,0.07195,0.01916,-0.07747,-0.13213,0.06544,-0.20163,0.15282],[0.15966,0.13968,-0.30705,-0.6997,0.85767,-0.33361,0.02302,0.13939,0.76613,-0.16048,0.23815,-0.02619,0.36637,0.66232,-0.05157,-1.75079,1.11655,0.08674,-0.01279,0.93662,-0.19349,0.05584,-0.09612,-0.17494,0.41509,-0.73094,0.07904,0.13144,-1.44775,0.08575,0.31878,-0.9898],[-0.0812,-0.31546,0.25682,0.19914,-0.70408,0.12156,0.11143,0.29811,-0.32993,0.14546,0.13417,0.07225,0.15462,-1.0693,0.02343,0.38839,-1.05611,-0.24012,0.17811,-1.0815,0.20037,0.09559,0.28888,0.09853,-0.29248,-0.16753,0.14565,0.33434,0.68026,0.11284,-0.11825,0.05865],[-0.00929,0.91636,-0.42284,-0.02863,0.12051,0.03223,-0.19775,-0.15707,0.01124,0.12392,0.02692,-0.00047,-0.39314,0.4733,-0.05642,-0.19613,0.39029,0.1475,-0.09131,0.12946,-0.02987,-0.0434,-0.06853,-0.21357,0.25374,-0.11717,-0.24528,-0.14139,-0.39877,-0.02352,-0.26973,-0.20058],[0.14674,0.00381,0.09785,0.08595,-0.14731,-0.1447,-0.04259,0.06001,-0.04398,-0.03585,0.10554,0.15841,0.06777,0.0524,0.08985,0.01344,-0.15921,-0.17707,-0.16467,-0.15546,0.12088,-0.01268,-0.12254,0.03851,0.00093,-0.11505,-0.17502,0.03057,-0.00489,-0.06417,-0.10143,-0.05598],[0.30009,0.04386,-0.52272,-0.89273,0.9496,-0.48652,0.20731,-0.17451,0.65473,0.10047,-0.0229,-0.01232,0.42074,0.58796,0.05482,-1.22291,1.13881,0.02316,-0.10723,1.10191,-0.29532,0.18169,-0.33799,0.0263,0.27283,-0.25291,0.05771,-0.15023,-0.70362,0.0541,0.07121,-0.69659],[-0.17596,-0.10916,-0.14365,-0.07732,-0.09732,-0.08895,-0.22063,-0.1523,-0.02042,0.02083,0.03961,-0.14712,0.08291,-0.12641,-0.02555,-0.15904,0.15961,-0.06672,0.01094,0.00852,-0.15676,-0.13,-0.15365,0.02112,0.12911,0.08955,-0.13006,-0.05329,-0.08874,-0.09967,-0.03809,-0.01455],[-0.34836,-1.13889,0.10337,-0.13496,-0.04808,-0.03222,-0.51755,0.03982,0.09824,-0.01657,0.04578,-0.5385,0.19047,-0.42639,-0.58981,0.2917,-0.05184,-0.21922,-0.16854,-0.13456,0.05697,-0.0951,-0.01955,-0.07392,-0.14752,0.01208,-0.04115,0.21154,0.31204,0.08623,-0.23614,0.26569],[0.14566,0.06998,-0.59811,-0.85474,0.55647,-0.31482,0.2003,0.02173,0.83599,-0.10415,0.07733,0.02049,0.38917,0.67556,-0.09707,-1.2489,0.94508,0.23318,-0.24581,1.18248,-0.37788,0.24986,0.01177,-0.26781,0.31095,-0.50707,0.14946,0.05148,-1.12845,-0.03859,0.0945,-0.73883],[0.05236,-0.13158,0.07469,0.02643,-0.10305,-0.06561,-0.07499,0.08178,0.01757,0.03185,-0.09057,-0.03841,-0.21896,0.09584,-0.02442,-0.06761,0.10261,0.04486,-0.25176,-0.14713,0.07726,-0.15028,-0.22361,0.08168,-0.21758,0.05419,0.06733,-0.10692,0.04922,0.04526,-0.243,-0.17679],[-0.09237,-0.0083,-0.67728,0.57636,0.11409,0.28382,-0.28779,-0.41501,-0.61331,-0.06169,0.23452,-0.26791,-0.44287,0.0635,-0.75415,-0.16561,-0.25797,-0.02267,-0.08526,-0.12607,0.30953,-0.29108,-0.23094,-0.07518,0.11736,0.35111,-0.05802,-0.86077,0.10266,0.1203,-0.19533,-0.12248],[0.35734,-0.03716,0.35118,0.33109,-0.82612,0.03333,0.14606,0.37108,-0.23072,0.12855,0.10228,0.35843,-0.11985,-0.45966,0.39862,0.59908,-1.10463,0.10384,0.15479,-1.12594,0.0792,-0.12464,0.23801,0.04349,-0.3108,-0.09374,-0.03394,0.08384,0.56873,-0.21079,0.25522,0.28056],[0.04339,0.13944,0.29473,0.05229,-0.79,0.36503,-0.00757,0.29557,-0.44118,0.0093,0.12486,0.25227,-0.04277,-0.39827,0.3639,0.52724,-0.90786,0.04672,0.31239,-0.94924,-0.04012,0.26107,0.29459,0.09444,-0.11541,0.02669,-0.03804,0.08943,0.63994,0.2149,-0.13221,0.37321],[-0.03713,0.16098,0.50795,0.07648,-0.75236,0.26193,0.02225,0.0957,-0.46753,0.02063,0.16102,0.33596,0.05166,-0.26984,0.38959,0.35158,-0.80494,0.01366,0.29415,-0.99826,0.11113,0.02665,0.20653,0.06447,-0.21019,-0.08432,0.09273,0.24469,0.56354,0.19854,0.21084,0.36492],[0.07024,-0.12063,0.02918,-0.0177,0.00296,0.08188,-0.30305,0.12207,-0.11843,0.13528,0.12791,-0.20313,-0.02888,-0.07789,-0.19428,0.16907,0.08645,-0.1401,-0.05391,0.1335,-0.08392,-0.20586,-0.13152,0.14956,0.12735,0.17331,-0.18181,-0.01052,0.14204,-0.015,-0.0587,-0.04029],[-0.0101,0.10432,-1.27967,-0.65911,0.84002,-0.54919,0.18924,-1.05145,0.93391,-0.12917,0.49368,-0.07346,0.13543,0.71358,-0.12312,-0.28542,1.04212,-0.00583,-0.06053,1.18365,-0.98445,-0.01065,-0.1441,-0.06567,0.44338,-1.31927,0.21617,-0.7505,0.22592,0.20533,0.22662,0.13166],[0.09535,-0.06377,0.11649,-0.04565,0.05816,-0.08522,-0.18293,-0.1443,-0.1503,-0.09644,0.08065,-0.17674,-0.09001,-0.12428,-0.1268,-0.02165,0.03749,-0.13296,-0.20817,0.06029,-0.10272,0.06194,-0.07805,-0.0209,0.10575,0.03182,-0.15992,-0.16945,-0.16536,-0.13045,0.00384,0.07342],[0.17813,-0.16266,-0.00345,0.06075,0.00934,-0.17038,-0.23852,0.06868,-0.09336,0.03812,-0.09473,0.02284,-0.28323,0.08937,-0.20388,0.06397,-0.13796,0.04014,-0.0407,0.05878,-0.04785,-0.09605,-0.0447,-0.21709,-0.08301,-0.05416,0.03651,-0.25467,-0.12981,-0.22482,-0.18399,-0.21407],[0.05963,0.26934,0.3144,0.2475,-0.79908,0.0534,0.18262,0.20239,-0.39843,-0.17022,0.0914,0.25671,0.16726,-0.50214,0.23953,0.43538,-0.79505,-0.06441,0.19714,-1.09788,-0.02821,0.23252,0.4651,0.3161,-0.18995,-0.04852,0.11721,0.31255,0.40472,-0.02052,0.03186,0.2143],[-0.11772,-0.13665,-0.12125,-0.11671,0.01357,-0.14447,-0.15991,0.06919,-0.14393,0.10529,-0.19118,-0.15488,-0.01969,0.0349,-0.20658,0.04318,-0.04812,-0.04371,-0.10254,0.13501,-0.04551,-0.00452,-0.1116,0.09839,0.06879,0.0025,-0.12199,-0.23861,0.06772,-0.24502,-0.25892,-0.07793],[0.03822,0.21038,0.47588,0.20764,-0.7843,0.33615,0.16948,0.02917,-0.31283,-0.15231,-0.02014,0.29587,0.12784,-0.54303,0.15771,0.29557,-1.11082,0.06418,0.23581,-1.00836,0.17477,0.25863,0.28955,0.02305,-0.23793,-0.15443,0.05779,0.29123,0.51411,0.16325,0.20027,0.31003],[-0.09682,0.10122,0.07497,-0.1178,-0.03466,0.07077,-0.00336,0.15479,-0.18469,0.02489,0.08267,-0.17146,-0.16308,0.05972,0.029,0.13692,-0.09076,0.04473,-0.24715,-0.16198,0.00866,-0.1887,-0.06341,-0.06996,0.11469,-0.06264,0.03981,0.01096,0.1157,-0.0206,0.04037,-0.14277],[0.02277,0.30458,-0.28526,-0.44822,0.99303,-0.15094,-0.0224,-0.02996,0.88038,-0.04531,0.15616,-0.12317,0.10585,0.38451,-0.1242,-0.31804,1.06746,0.2975,-0.01527,1.05003,-0.10019,-0.01155,-0.16474,-0.13864,0.46482,-0.13674,0.11934,-0.02207,-0.34891,0.05564,0.32372,-0.20022],[-0.1299,0.05894,0.41366,0.28937,-0.62569,0.28199,0.02933,0.17897,-0.25224,-0.10942,0.11041,0.10946,0.13023,-0.32916,0.3921,0.48725,-0.89991,-0.07168,0.33687,-0.99802,-0.09308,0.07177,0.33956,0.01655,-0.20576,-0.04797,0.02261,0.17382,0.43995,0.00558,0.06308,0.34684],[-0.10388,0.17047,-0.05835,0.06411,0.07117,-0.19301,0.06675,-0.12194,-0.17895,0.07736,-0.02662,-0.14897,-0.14311,0.15455,-0.23679,0.02528,0.00357,-0.14114,0.01679,-0.15876,-0.06532,-0.09736,0.03936,-0.09822,-0.22359,-0.07351,0.07913,-0.16188,0.14898,0.03835,-0.08022,-0.06398],[0.12613,0.08025,0.33399,0.18164,-0.573,0.03915,-0.0262,0.30596,-0.37156,0.0092,0.22441,0.21735,0.02566,-0.50549,0.3365,0.4932,-0.78346,-0.02854,0.34757,-0.81974,0.1234,0.00861,0.27166,0.11447,-0.16409,0.02361,0.18495,0.26623,0.44733,0.16368,-0.02257,0.36122],[-0.1398,0.15327,0.19984,0.27399,-0.64224,0.32259,0.02976,0.18409,-0.35625,-0.06061,0.18654,0.37916,0.13097,-0.52713,0.32984,0.41707,-1.10996,-0.01877,0.19642,-0.92666,0.06746,0.14477,0.18946,0.27935,0.0456,-0.14835,0.16377,0.22423,0.57941,0.0905,0.1311,0.24011],[-0.04552,-0.06093,-0.22714,-0.1055,-0.09923,-0.00114,-0.22581,0.04518,-0.26411,0.14721,-0.09137,-0.27308,-0.05938,-0.11381,-0.24052,-0.08583,-0.0503,0.01084,0.03154,-0.16212,0.06488,-0.20823,-0.14108,0.00955,-0.13389,-0.19547,-0.15136,-0.04361,-0.06769,0.04898,-0.03283,-0.27073],[-0.17846,0.01393,-0.05801,-0.05372,0.05814,0.07419,-0.10261,-0.08652,0.01203,0.06406,-0.01586,0.08888,0.01191,-0.16591,-0.1689,-0.04534,0.06051,-0.17726,-0.09104,-0.16892,-0.01778,0.07688,0.15662,-0.14393,0.1365,-0.0708,-0.20695,0.06219,0.0973,-0.06033,-0.05078,-0.02917],[-0.01175,-0.00669,-0.27307,0.10291,-0.03543,0.11686,-0.07011,-0.03074,-0.06557,0.09569,-0.0527,0.0345,-0.1834,-0.244,0.0065,-0.6573,-0.26014,-0.11118,0.18609,-0.21057,0.1468,-0.26427,-0.05115,0.12726,-0.10889,-0.01722,-0.10107,-0.56165,-0.41348,-0.05409,-0.02577,-0.2737],[-0.20154,0.02248,-0.16388,-0.05231,-0.07229,-0.01482,0.07802,-0.10136,0.07676,-0.15104,-0.14042,0.05833,-0.15077,-0.18954,-0.17498,-0.10192,-0.21628,-0.03735,-0.09494,-0.10943,-0.06037,-0.19647,0.05995,0.18404,-0.08697,-0.19802,-0.11031,0.16406,0.14163,0.02922,0.04521,-0.15569]],"b":[-0.19569,-0.15195,0.13094,0.0807,-0.27158,-0.17573,0.25692,-0.16453,0.16171,0.18605,-0.03234,-0.46476,-0.14791,0.23396,0.22304,-0.21022,0.22328,-0.14378,0.0151,0.06351,0.02127,0.0015,-0.16348,0.30497,0.07125,-0.14083,0.16001,0.11001,-0.02543,-0.15608,-0.10109,-0.01746]},{"w":[[0.02698,0.02035,-0.23084,0.42336,-0.03245,-0.14517,-0.28002,0.08056,0.05375,-0.46222,0.11335,-0.37452,0.34052,0.34065,0.26329,0.08324,-0.4072,0.08215,-0.06973,0.23408,-0.00061,0.34527,-0.10056,-0.39601,0.13178,0.06016,0.26155,0.28768,-0.06878,-0.02375,-0.15664,-0.06924],[0.15445,0.11704,0.50384,-0.23013,0.05283,-0.04294,0.4138,-0.01438,-0.07352,0.31399,-0.04119,0.40469,-0.34362,-0.31068,-0.34937,0.08334,0.52087,-0.04144,-0.03186,-0.37574,-0.00573,-0.3976,-0.01828,0.27446,-0.19158,0.03943,-0.21306,-0.13169,-0.01345,-0.00263,-0.1004,-0.0381]],"b":[-0.16411,0.1178]}];
+function mlp(x, y) {
+  let h = [x, y];
+  W.forEach((layer, li) => {
+    const out = layer.b.map((b, j) => layer.w[j].reduce((s, wij, i) => s + wij * h[i], b));
+    h = li < W.length - 1 ? out.map(v => Math.max(0, v)) : out;
+  });
+  const m = Math.max(...h), e = h.map(v => Math.exp(v - m)), s = e[0] + e[1];
+  return { logits: h, p: e.map(v => v / s) };
+}
+
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rand = mulberry32(7);
+const randn = () => Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand());
+const PTS = [];
+for (let i = 0; i < 300; i++) {
+  const t = rand() * Math.PI;
+  PTS.push({ x: Math.cos(t) + 0.25 * randn(), y: Math.sin(t) + 0.25 * randn(), c: 0 });
+  const u = rand() * Math.PI;
+  PTS.push({ x: 1 - Math.cos(u) + 0.25 * randn(), y: 0.5 - Math.sin(u) + 0.25 * randn(), c: 1 });
+}
+const VIEW = { x0: -1.6, x1: 2.6, y0: -1.3, y1: 1.8 };
+const canvas = document.getElementById("moons");
+let clicked = null;
+function drawMoons() {
+  const css = getComputedStyle(document.documentElement);
+  const col = [css.getPropertyValue("--torch").trim(), css.getPropertyValue("--async").trim()];
+  const bg = css.getPropertyValue("--sheet").trim();
+  const ink = css.getPropertyValue("--ink").trim();
+  const w = canvas.clientWidth, h = Math.round(w * 0.72), dpr = window.devicePixelRatio || 1;
+  canvas.style.height = h + "px";
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+  const toPx = (x, y) => [(x - VIEW.x0) / (VIEW.x1 - VIEW.x0) * w, (VIEW.y1 - y) / (VIEW.y1 - VIEW.y0) * h];
+  const cell = 6;
+  for (let px = 0; px < w; px += cell) for (let py = 0; py < h; py += cell) {
+    const x = VIEW.x0 + (px + cell / 2) / w * (VIEW.x1 - VIEW.x0);
+    const y = VIEW.y1 - (py + cell / 2) / h * (VIEW.y1 - VIEW.y0);
+    const { p } = mlp(x, y);
+    const k = p[0] >= 0.5 ? 0 : 1;
+    ctx.globalAlpha = 0.08 + 0.14 * Math.abs(p[0] - 0.5) * 2;
+    ctx.fillStyle = col[k]; ctx.fillRect(px, py, cell, cell);
+  }
+  ctx.globalAlpha = 0.9;
+  PTS.forEach(pt => { const [px, py] = toPx(pt.x, pt.y); ctx.fillStyle = col[pt.c]; ctx.beginPath(); ctx.arc(px, py, 2.6, 0, Math.PI * 2); ctx.fill(); });
+  ctx.globalAlpha = 1;
+  if (clicked) {
+    const [px, py] = toPx(clicked.x, clicked.y);
+    ctx.strokeStyle = ink; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 13, py); ctx.lineTo(px + 13, py); ctx.moveTo(px, py - 13); ctx.lineTo(px, py + 13); ctx.stroke();
+  }
+}
+function predictAt(x, y) {
+  clicked = { x, y };
+  const { logits, p } = mlp(x, y);
+  const k = p[0] >= 0.5 ? 0 : 1;
+  document.getElementById("pred-out").innerHTML =
+    `Điểm <code>(${x.toFixed(2)}, ${y.toFixed(2)})</code> → logits <code>[${logits.map(v => v.toFixed(2)).join(", ")}]</code> → softmax → ` +
+    `<b>lớp ${k} · trăng ${k === 0 ? "trên" : "dưới"}</b> với ${(p[k] * 100).toFixed(1)}%.` +
+    (p[k] < 0.7 ? " Model không chắc: điểm này nằm gần ranh giới." : "");
+  drawMoons();
+}
+canvas.addEventListener("click", e => {
+  const r = canvas.getBoundingClientRect();
+  predictAt(VIEW.x0 + (e.clientX - r.left) / r.width * (VIEW.x1 - VIEW.x0), VIEW.y1 - (e.clientY - r.top) / r.height * (VIEW.y1 - VIEW.y0));
+});
+let resizeT;
+window.addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(drawMoons, 120); });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawMoons);
+new MutationObserver(drawMoons).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+renderTrace();
+renderLoss();
+predictAt(0, 1);
 renderAsync();
 renderTorch();
 select("async", 0);
