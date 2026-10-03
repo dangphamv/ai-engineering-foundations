@@ -1,0 +1,12 @@
+[project]
+name = "ai-engineering-foundations"
+version = "0.1.0"
+description = "Hands-on AI engineering foundations: async LLM calls with pydantic validation, and PyTorch training loops."
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.3",
+    "openai>=3.24.0",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.4",
+    "torch>=2.14.1",
+]
