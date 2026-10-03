@@ -1,7 +1,19 @@
+import argparse
 import math
+from pathlib import Path
 
 import torch
 from torch import nn
+
+from model import MoonsMLP
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--hidden-size", type=int, default=32)
+parser.add_argument("--num-layers", type=int, default=2)
+parser.add_argument("--epochs", type=int, default=50)
+parser.add_argument("--lr", type=float, default=1e-2)
+parser.add_argument("--out", type=Path, default=Path(__file__).resolve().parent.parent / "models" / "moons-mlp")
+args = parser.parse_args()
 
 torch.manual_seed(0)
 
@@ -22,17 +34,14 @@ X, y = X[perm], y[perm]
 X_train, y_train = X[:1600], y[:1600]
 X_val, y_val = X[1600:], y[1600:]
 
-model = nn.Sequential(
-    nn.Linear(2, 32),
-    nn.ReLU(),
-    nn.Linear(32, 32),
-    nn.ReLU(),
-    nn.Linear(32, 2),
-)
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
+model = MoonsMLP(hidden_size=args.hidden_size, num_layers=args.num_layers)
+num_params = sum(p.numel() for p in model.parameters())
+print(f"MoonsMLP hidden_size={args.hidden_size} num_layers={args.num_layers} | {num_params:,} params")
 
-EPOCHS = 50
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+
+EPOCHS = args.epochs
 BATCH_SIZE = 64
 
 for epoch in range(EPOCHS):
@@ -76,3 +85,7 @@ for epoch in range(EPOCHS):
             f"epoch {epoch:3d} | train_loss {train_loss:.4f} "
             f"| val_loss {val_loss:.4f} | val_acc {val_acc:.3f}"
         )
+
+# Ghi config.json (kiến trúc) + model.safetensors (trọng số) — cùng format với model trên Hugging Face Hub.
+model.save_pretrained(args.out)
+print(f"saved to {args.out}")
